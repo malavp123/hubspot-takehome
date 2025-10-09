@@ -1,0 +1,29 @@
+version: 2
+
+models:
+  - name: stg__customers
+    columns:
+      - name: customer_key
+        tests: [not_null, unique]
+      - name: nation_key
+        tests: [not_null]
+  - name: stg__orders
+    columns:
+      - name: order_key
+        tests: [not_null, unique]
+      - name: customer_key
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg__customers')
+              field: customer_key
+  - name: stg__line_items
+    columns:
+      - name: order_key
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg__orders')
+              field: order_key
+      - name: line_number
+        tests: [not_null]

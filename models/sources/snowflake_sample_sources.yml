@@ -1,0 +1,24 @@
+version: 2
+
+sources:
+  - name: tpch
+    database: SNOWFLAKE_SAMPLE_DATA
+    schema: TPCH_SF1
+    tables:
+      - name: CUSTOMER
+      - name: ORDERS
+      - name: LINEITEM
+      - name: NATION
+      - name: REGION
+      - name: PART
+      - name: SUPPLIER
+  
+  - name: demo_db
+    database: DEMO_DB
+    schema: DEMO_SCHEMA
+    tables:
+      - name: ORDERS_WITH_INGEST
+    freshness:
+      warn_after: {count: 30, period: minute}
+      error_after: {count: 1, period: hour} 
+    loaded_at_field: _INGESTED_AT

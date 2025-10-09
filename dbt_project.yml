@@ -1,9 +1,8 @@
-
 # Name your project! Project names should contain only lowercase characters
 # and underscores. A good package name should reflect your organization's
 # name or the intended use of these models
 name: 'analytics_project'
-version: '1.0.0'
+version: '1.10.11'
 
 # This setting configures which "profile" dbt uses for this project.
 profile: 'analytics_project'
