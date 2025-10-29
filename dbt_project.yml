@@ -33,3 +33,27 @@ models:
     # Config indicated by + and applies to all files under models/example/
     example:
       +materialized: view
+    staging:
+      +materialized: view
+    intermediate:
+      # ephemeral for speed, flip to "view" if you want to inspect
+      +materialized: ephemeral
+    marts:
+      +materialized: view
+      marts:
+        +schema: marts
+
+
+seeds:
+  +quote_columns: false
+  +materialized: seed
+  analytics_project:
+    calendar:
+      +column_types:
+        listing_id: int
+        date: string
+        available: string
+        reservation_id: int
+        price: int
+        minimum_nights: int
+        maximum_nights: int

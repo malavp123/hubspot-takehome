@@ -1,0 +1,66 @@
+# models/schema.yml
+version: 2
+
+models:
+  - name: stg__calendar
+    description: "Calendar at (listing_id, date) with pricing & availability"
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [listing_id, date]
+    columns:
+      - name: is_available
+        tests:
+          - accepted_values:
+              values: [true, false]
+
+  - name: stg__listings
+    description: "Listings (static-ish attributes)"
+
+  - name: stg__generated_reviews
+    description: "Generated reviews (listing-level, no booking key)"
+    columns:
+      - name: review_score
+        tests:
+          - not_null
+          - accepted_values:
+              values: [1,2,3,4,5]
+
+  - name: stg__amenities_changelog
+    description: "Point-in-time amenity sets (change log)"
+
+  - name: int__listing_day_spine
+    description: "Daily spine (listing_id, date)"
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [listing_id, date]
+
+  - name: int__revenue_occupancy
+    description: "Revenue & occupancy inputs computed from calendar"
+    columns:
+      - name: price_usd
+        tests: [not_null]
+
+  - name: int__amenities_daily
+    description: "Amenity flags exploded to daily grain"
+    
+  - name: mart_revenue_occupancy_day
+    description: "TABLE. Daily revenue/occupancy + listing dims"
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [listing_id, date]
+    columns:
+      - name: revenue
+        tests:
+          - not_null
+
+  - name: mart_amenity_review_day
+    description: "TABLE. Daily amenity flags and review score on review dates"
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [listing_id, date]
+
+  - name: mart_listing_day
+    description: "Final analyst surface at day/listing grain (join of the two marts)"
+    columns:
+      - name: price_usd
+        description: "Use revenue (not price) for money; price is nightly sticker."
