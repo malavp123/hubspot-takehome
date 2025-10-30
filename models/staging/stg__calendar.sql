@@ -1,19 +1,11 @@
--- models/staging/stg_calendar.sql
-with src as (
-  select * from {{ ref('CALENDAR') }}
-),
-norm as (
-  select
-    cast(listing_id as bigint)    as listing_id,
-    try_cast(date as date)        as date,
-    case lower(available)
-      when 't' then true
-      when 'f' then false
-      else null end               as is_available,
-    cast(reservation_id as bigint) as reservation_id,
-    {{ as_currency('price') }}    as price_usd,
-    cast(minimum_nights as int)   as min_nights,
-    cast(maximum_nights as int)   as max_nights
-  from src
-)
-select * from norm
+-- models/stage/stg__calendar.sql
+{{ config(materialized='view') }}
+select
+  listing_id::number                        as listing_id,
+  try_to_date(date)                         as dt,                         -- daily grain
+  case when lower(available) = 't' then 1 else 0 end as is_available,     -- 't' / 'f' → 1/0  :contentReference[oaicite:4]{index=4}
+  reservation_id::number                    as reservation_id,            -- occupied if not null  :contentReference[oaicite:5]{index=5}
+  try_to_number(regexp_replace(price, '[^0-9.]', '')) as price_usd,       -- varchar → numeric  :contentReference[oaicite:6]{index=6}
+  minimum_nights::number                    as min_nights,
+  maximum_nights::number                    as max_nights
+from {{ ref('CALENDAR') }}

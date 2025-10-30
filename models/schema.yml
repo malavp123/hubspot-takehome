@@ -6,12 +6,12 @@ models:
     description: "Calendar at (listing_id, date) with pricing & availability"
     tests:
       - dbt_utils.unique_combination_of_columns:
-          combination_of_columns: [listing_id, date]
+          combination_of_columns: [listing_id, dt]
     columns:
       - name: is_available
         tests:
           - accepted_values:
-              values: [true, false]
+              values: [1, 0]
 
   - name: stg__listings
     description: "Listings (static-ish attributes)"
