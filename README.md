@@ -27,7 +27,7 @@ The goal was to design a reporting model that enables analysts to:
 The final table therefore needs to be **at the `listing_id × date` grain**, so analysts can filter and aggregate by any dimension without complex joins.
 
 ---
-
+```text
 ## 🧩 Project Structure
 
 hubspot_analytics_takehome/
@@ -50,7 +50,7 @@ hubspot_analytics_takehome/
 │ └── mart_listing_daily_enriched.sql
 └── seeds/
 
-
+```text
 ---
 
 ## 🧩 Model Summary & Grain
